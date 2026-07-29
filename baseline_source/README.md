@@ -4,8 +4,8 @@
 # 基本信息
 1.初次获取渠道：Kaggle Notebook
 2.Kaggle链接：https://www.kaggle.com/code/issacchanjj/anti-money-laundering-detection-with-gnn/notebook
-2.原作GitHub仓库链接：https://github.com/issacchan26/AntiMoneyLaunderingDetectionWithGNN/tree/main
-3.项目结构：dataset.py、model.py、train.py
+3.原作GitHub仓库链接：https://github.com/issacchan26/AntiMoneyLaunderingDetectionWithGNN/tree/main
+4.项目结构：dataset.py、model.py、train.py
 
 # 原版代码存在的缺陷
 1.
