@@ -2,12 +2,16 @@
 该文件夹为开源基线模型源码，用于反洗钱GNN项目迭代的基础版本。
 
 # 二、基本信息
-1.初次获取渠道：Kaggle Notebook  
+1.初次获取渠道：Kaggle Notebook 
+
 2.Kaggle链接：https://www.kaggle.com/code/issacchanjj/anti-money-laundering-detection-with-gnn/notebook
 
 3.原作GitHub仓库链接：https://github.com/issacchan26/AntiMoneyLaunderingDetectionWithGNN/tree/main
+
 4.项目结构：dataset.py、model.py、train.py
+
 5.使用IBM数据集：HI-Small_Trans.csv  
+
 6.原始数据集字段：【'Timestamp', 'From Bank', 'Account', 'To Bank', 'Account.1','Amount Received', 'Receiving Currency', 'Amount Paid','Payment Currency', 'Payment Format', 'Is Laundering'】  其中'Is Laundering'是标签，1=洗钱客户，0=正常客户
 
 # 三、原基线代码存在的核心缺陷
