@@ -63,13 +63,14 @@ C.关联密度特征（平均单对单交易频次）：（该账户发起的总
 
 3、模型参数：
 
-（1）、GATConv中加入edge_dim参数，使模型没有学习交易边特征；加入自环边add_self_loops=True，加入自环边的交易边信息fill_value="mean"。
+(1)、GATConv中加入edge_dim参数，使模型没有学习交易边特征；加入自环边add_self_loops=True，加入自环边的交易边信息fill_value="mean"。
 
-（2）、用GATv2Conv替代GATConv。
+(2）、用GATv2Conv替代GATConv。
 
 
 4.其他优化
-（1）、时间戳的归一化，放在切分训练集之后完成，因此从preprocess函数放到process函数中。
+(1)、时间戳的归一化，放在切分训练集之后完成，因此从preprocess函数放到process函数中。
+(2)、
 五、其他优化设想
 边特征有一列时间戳，这个可以改成相对时间特征（该边距离0-70%窗口七点的天数或者秒数），或者直接去掉该列，如果留这列的话，要对时间戳
 
