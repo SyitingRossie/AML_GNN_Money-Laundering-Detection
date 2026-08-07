@@ -2,17 +2,17 @@
 该文件夹为开源基线模型源码，用于反洗钱GNN项目迭代的基础版本。
 
 # 二、基本信息
-1.初次获取渠道：Kaggle Notebook 
+1、初次获取渠道：Kaggle Notebook 
 
-2.Kaggle链接：https://www.kaggle.com/code/issacchanjj/anti-money-laundering-detection-with-gnn/notebook
+2、Kaggle链接：https://www.kaggle.com/code/issacchanjj/anti-money-laundering-detection-with-gnn/notebook
 
-3.原作GitHub仓库链接：https://github.com/issacchan26/AntiMoneyLaunderingDetectionWithGNN/tree/main
+3、原作GitHub仓库链接：https://github.com/issacchan26/AntiMoneyLaunderingDetectionWithGNN/tree/main
 
-4.项目结构：dataset.py、model.py、train.py
+4、项目结构：dataset.py、model.py、train.py
 
-5.使用IBM数据集：HI-Small_Trans.csv  
+5、使用IBM数据集：HI-Small_Trans.csv  
 
-6.原始数据集字段：【'Timestamp', 'From Bank', 'Account', 'To Bank', 'Account.1','Amount Received', 'Receiving Currency', 'Amount Paid','Payment Currency', 'Payment Format', 'Is Laundering'】  其中'Is Laundering'是标签，1=洗钱客户，0=正常客户
+6、原始数据集字段：【'Timestamp', 'From Bank', 'Account', 'To Bank', 'Account.1','Amount Received', 'Receiving Currency', 'Amount Paid','Payment Currency', 'Payment Format', 'Is Laundering'】  其中'Is Laundering'是标签，1=洗钱客户，0=正常客户
 
 # 三、原基线代码存在的核心缺陷
 1、严重的数据泄露问题：
@@ -27,12 +27,12 @@
 
 (1)、原demo的节点特征是统计了各类货币进款均值、和出款均值，但金额范围跨度较大。
 
-3.模型参数：
+3、模型参数：
 原设计中应有边特征，但在模型里未加edge_dim参数，致使模型没有学习到交易边特征。
 原设计没有使用自还边，会导致卷积过程中没有融合节点自身的特征信息。
 
 # 四、本人优化方案（核心任务：节点分类（账户级））
-1.修复数据泄露（具体操作）：
+1、修复数据泄露（具体操作）：
 
 (1)、按交易数据的时间排序，然后先切分前70%作为训练集。
 
@@ -46,7 +46,7 @@
 
 (6)、验证阶段的消息传递图（节点特征、交易边），与训练阶段完全相同，均使用0-70%时间段的数据。
 
-2.特征工程：
+2、特征工程：
 
 (1)、在节点特征中，对各类货币进款均值、和出款均值，进行取对数压缩log1p，防止极端大户或洗钱中转站的数值过大导致梯度爆炸。
 
@@ -58,7 +58,7 @@ B.交易频次特征（总笔数）：（该账户发起的总转出笔数/接�
 
 C.关联密度特征（平均单对单交易频次）：（该账户发起的总转出笔数/接收的总转入笔数）
 
-3.模型参数：
+3、模型参数：
 （1）、GATConv中加入edge_dim参数，使模型没有学习交易边特征；加入自环边add_self_loops=True，加入自环边的交易边信息fill_value="mean"。
 
 （2）、用GATv2Conv替代GATConv。
