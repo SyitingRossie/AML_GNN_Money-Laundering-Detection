@@ -87,7 +87,7 @@ C.关联密度特征（平均单对单交易频次）：（该账户发起的总
 
 5、优化器：优化器从SGD换成Adam。
 
-6、完善指标：增加PR-AUC（AP)、ROC-AUC、recall、precision、F4 score 
+6、完善验证指标：增加PR-AUC（AP)、ROC-AUC、recall、precision、F4 score 
 
 
 五、其他优化设想
