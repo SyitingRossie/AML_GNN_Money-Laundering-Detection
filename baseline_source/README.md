@@ -72,7 +72,7 @@ C.关联密度特征（平均单对单交易频次）：（该账户发起的总
 
 3、样本不平衡处理：
 
-(1)、采用WeightedRandomSampler加权有放回采样：洗钱节点设置采样权重=5，正常账户权重=1。WeightedRandomSampler为迭代器，每轮Epoch重新执行一次随机采样，
+(1)、采用WeightedRandomSampler加权有放回采样：洗钱节点设置采样权重=5，正常账户权重=1。WeightedRandomSampler为迭代器，每轮Epoch重新执行一次随机采样。
 
 4、模型参数：
 
