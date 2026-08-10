@@ -91,6 +91,7 @@ C.关联密度特征（平均单对单交易频次）：（该账户发起的总
 
 
 五、其他优化设想
+目前ImprovedGAT.forward 中预留了return_embedding=True 开关，下一步可以写一段代码：抽取 GNN 的节点 Embedding，拼上原始节点的 tabular 特征，喂给 XGBoost / LightGBM 做二阶段分类。
 
 
 
