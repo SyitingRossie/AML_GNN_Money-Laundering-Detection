@@ -78,6 +78,10 @@ C.关联密度特征（平均单对单交易频次）：（该账户发起的总
 
 (1)、采用WeightedRandomSampler加权有放回采样：洗钱节点设置采样权重=5，正常账户权重=1。WeightedRandomSampler为迭代器，每轮Epoch重新执行一次随机采样，避免模型过拟合到固定的采样结构。
 
+1. 损失函数补偿：计算了训练集中的正负样本比例，并传入 BCEWithLogitsLoss 的 pos_weight（设置了最大截断值 15 防止梯度剧烈震荡）。
+2. 评估指标选择：放弃了容易受负样本主导的 ROC-AUC，转而以 PR-AUC (Average Precision) 为核心监控指标。
+3. 动态阈值选取：由于反洗钱业务更倾向于‘宁可错杀、不能放过’，我在验证集上通过最大化 $F_4$-Score（给 Recall 赋以 4 倍于 Precision 的权重）来动态搜索最佳决策阈值。”
+
 4、GAT卷积网络搭建：
 
 (1)、GATConv中加入edge_dim参数，使模型没有学习交易边特征；加入自环边add_self_loops=True，加入自环边的交易边信息fill_value="mean"。
