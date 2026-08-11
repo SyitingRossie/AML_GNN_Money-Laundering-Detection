@@ -104,21 +104,32 @@ C.关联密度特征（平均单对单交易频次）：（该账户发起的总
 
 (1）、所有节点表（共2列）：Account（”银行_账号“）、Bank（LabelEncoder编码）
 
-(2)、节点特征表(37列)：Bank（LabelEncoder编码）、avg_paid_0 ~ avg_paid_14、avg_received_0 ~ avg_received_14、unique_out_accounts（出度去重数）、unique_in_accounts（入度去重数）、total_out_count（总付款笔数）、total_in_count（总进款笔数）、avg_T_out（平均转出频次）、avg_T_in（平均转入频次）、除Bank列外全部对数压缩
+(2)、节点特征表(31列)：Bank（LabelEncoder编码）、avg_paid_0 ~ avg_paid_14、avg_received_0 ~ avg_received_14
 
 (3)、交易边特征表(6列）：Timestamp（归一化）、Amount Received（对数压缩）、Receiving Currency（LabelEncoder编码）、Amount Paid（对数压缩）、Payment Currency（LabelEncoder编码）、Payment Format（LabelEncoder编码）
 
 (4)、边的连接关系(2列）：from_np、to_np（节点账号排序后映射为0~N-1的整数节点ID）
 
-改进后的图：
-[原始 30 列稀疏特征] 
-       ↓ 优化为 6 维高信息密度特征
+改进：
+
+(2)、节点特征
+
+将原始31列稀疏节点特征，改进为12维度高信息密度特征（同时去掉Bank列）。
+
 1. total_amount_paid      : 总付出金额 (对数压缩)
 2. total_amount_received  : 总接收金额 (对数压缩)
 3. avg_amount_paid        : 笔均付出金额 (对数压缩)
 4. avg_amount_received    : 笔均接收金额 (对数压缩)
 5. net_flow_ratio         : 资金净流转率 (Received - Paid) / (Received + Paid + 1e-5)
 6. unique_currency_count  : 涉及货币种类总数 (衡量交易复杂度)
+7. unique_out_accounts    : 出度去重数
+8. unique_in_accounts     : 入度去重数
+9. total_out_count        : 总付款笔数
+10. total_in_count        : 总进款笔数
+11. avg_T_out             : 平均转出频次
+12. avg_T_in              : 平均转入频次
+
+
    
 
 
