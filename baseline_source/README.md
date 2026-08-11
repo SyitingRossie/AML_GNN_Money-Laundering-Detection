@@ -15,7 +15,7 @@
 6、原始数据集字段：【'Timestamp', 'From Bank', 'Account', 'To Bank', 'Account.1','Amount Received', 'Receiving Currency', 'Amount Paid','Payment Currency', 'Payment Format', 'Is Laundering'】  其中'Is Laundering'是标签，1=洗钱客户，0=正常客户
 
 # 三、原基线代码存在的核心缺陷
-1、严重的数据泄露问题：
+1、严重的时序数据泄露问题：
 原demo是先整理节点标签和节点特征后，再进行随机切分训练集和验证集，对节点打掩码。没有考虑到金融行业实际应用中的时序问题。
 
 (1)、训练集和验证集都用了全局的节点特征，例如：特征有每个账户的各种货币的平均收（付）款金额。如果训练集就统计了测试集在内的平均收付款金额，那就产生了泄露，容易出现验证集指标虚高，模型在真实线下业务场景推理时效果大幅滑坡，泛化能力差。
