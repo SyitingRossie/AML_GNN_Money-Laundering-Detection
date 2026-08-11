@@ -103,7 +103,7 @@ C.关联密度特征（平均单对单交易频次）：（该账户发起的总
 每张过程表的处理：
 (1）、所有节点表（共2列）：Account（”银行_账号“）、Bank（LabelEncoder编码）
 (2)、节点特征表(37列)：Bank（LabelEncoder编码）、avg_paid_0 ~ avg_paid_14、avg_received_0 ~ avg_received_14、unique_out_accounts（出度去重数）、unique_in_accounts（入度去重数）、total_out_count（总付款笔数）、total_in_count（总进款笔数）、avg_T_out（平均转出频次）、avg_T_in（平均转入频次）、除Bank列外全部对数压缩
-(3)、交易边特征表：
+(3)、交易边特征表：Timestamp（归一化）、Amount Received（对数压缩）、Receiving Currency（LabelEncoder编码）、Amount Paid（对数压缩）、Payment Currency（LabelEncoder编码）、Payment Format（LabelEncoder编码）
 
 ----训练训练集的标签采用交易时间在70%-85%之间的标签，验证集标签用。训练集的节点特征只在训练集里统计，验证集的节点特征取自全部交易数据，为简化训练模型，这里验证集并未采取严格按照时序滚动回测（每天往前推，每天重新算特征，每天验证一次),而是基于时间戳的固定窗口切分（即后20%交易量打包为验证窗口，用于）。
 
