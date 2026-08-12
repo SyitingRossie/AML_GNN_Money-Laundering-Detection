@@ -136,7 +136,11 @@ C.关联密度特征（平均单对单交易频次）：（该账户发起的总
 11. avg_T_out             : 平均转出频次
 12. avg_T_in              : 平均转入频次
 
-(3)、交易边特征：、Payment Currency（热独编码）、is_cross_currency（是否跨币种交易1/0)、交易金额（统一成美元并取对数）
+(3)、交易边特征：
+
+1. Payment Currency       : 热独编码
+2. is_cross_currency      : 是否跨币种交易（1/0)
+3. Amount_USD_log         : 交易金额（统一成美元并取对数）
 
 
 
