@@ -141,8 +141,8 @@ C.关联密度特征（平均单对单交易频次）：（该账户发起的总
 1. Payment Currency       : 热独编码
 2. is_cross_currency      : 是否跨币种交易（1/0)
 3. Amount_USD_log         : 交易金额（统一成美元并取对数）
-4. hour_sin,hour_cos      : 小时转成在一个圆的坐标
-5. dow_sin,dow_cos        : 星期几转成在一个圆的坐标
+4. hour_sin,hour_cos      : 小时周期性编码（将 0-23 点映射至单位圆坐标，消除跨日数值断层）
+5. dow_sin,dow_cos        : 星期周期性编码（将 周一~周日映射至单位圆坐标，消除跨周数值断层）
 6. delta_last_in_log      : 账户本笔出款距离上一次出款的秒数，取对数，看连续分拆转账频率
 7. delta_last_out_log     : 账户本笔出款距离上一次进款的秒数，取对数，看过桥转走的时间
 
