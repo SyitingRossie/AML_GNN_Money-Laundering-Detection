@@ -58,10 +58,13 @@
 摒弃原31维稀疏特征，将节点特征重构为 **4 大风控业务维度、共 12 维稠密特征**，并在各时序窗口内独立进行 $\log1p$ 极值平滑与 `StandardScaler` 标准化处理：
 
 (1)、资金规模与体量（平滑长尾分布，消除大额量纲干扰）
-total_amount_paid：总付出金额
-total_amount_received：总接收金额
+
+total_amount_paid：总付出金额  | total_amount_received：总接收金额
+
 avg_amount_paid：笔均付出金额
+
 avg_amount_received：笔均接收金额
+
 (2)、资金流动与留存（捕捉“快进快出”与高复杂度洗钱）
 net_flow_ratio：资金净流转率，算子为 (Rec−Paid)/(Rec+Paid+1e−5)
 unique_currency_count：涉及交易货币种类去重总数
