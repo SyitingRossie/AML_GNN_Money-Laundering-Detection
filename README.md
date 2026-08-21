@@ -17,7 +17,7 @@
 
 7、文件结构：
 代码分为两个版本
-- baseline_source: 第一版基线GNN代码（修改基础）
+- baseline_source: 第一版基线GNN代码（原demo）
 - optimized_code: 本人优化版本
 
 
