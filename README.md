@@ -18,7 +18,7 @@
 6、原始数据集字段：【'Timestamp', 'From Bank', 'Account', 'To Bank', 'Account.1','Amount Received', 'Receiving Currency', 'Amount Paid','Payment Currency', 'Payment Format', 'Is Laundering'】  其中'Is Laundering'是标签，1=洗钱客户，0=正常客户
 
 7、文件结构：
-   ├── baseline_source/    # 开源基线模型源码（含原始缺陷版本，用于对比）
+   ├── train.pt/           # 开源基线模型源码（含原始缺陷版本，用于对比）
    ├── optimized_code/     # 重构后的工业级优化源码（修复数据泄露、拓扑特征与 GATv2）
    ├── requirements.txt    # 项目依赖库
    └── README.md           # 项目技术文档
