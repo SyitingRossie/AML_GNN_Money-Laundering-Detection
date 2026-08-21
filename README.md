@@ -68,6 +68,7 @@ avg_amount_received：笔均接收金额
 (2)、资金流动与留存（捕捉“快进快出”与高复杂度洗钱）
 
 net_flow_ratio：资金净流转率，公式=(Rec−Paid)/(Rec+Paid+1e−5)
+
 unique_currency_count：涉及交易货币种类去重总数
 
 (3)、图拓扑与交互度（识别“归集”与“分发”网络角色）
@@ -80,8 +81,8 @@ unique_in_accounts：入度去重对手数 (In-Degree)
 total_out_count：总付款笔数
 total_in_count：总收款笔数
 
-avg_T_out：平均转出时间间隔频次
-avg_T_in：平均转入时间间隔频次
+avg_T_out：平均转出频次
+avg_T_in：平均转入频次
 
 1. total_amount_paid      : 总付出金额 (对数压缩)
 2. total_amount_received  : 总接收金额 (对数压缩)
