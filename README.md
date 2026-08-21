@@ -55,7 +55,29 @@
 
 **优化方案**：
 (1)、
+### 2. 特征工程重构：12 维高稠密风控特征矩阵
 
+彻底废弃原基线 31 维稀疏且带数值偏差的特征，将节点特征重构为 **4 大风控业务维度、共 12 维稠密特征**，并在各时序窗口内独立进行 $\log1p$ 极值平滑与 `StandardScaler` 标准化处理：
+
+| 风控业务维度 | 序号 | 特征名称 (Feature) | 算子逻辑与公式 | 解决了什么业务/工程痛点 |
+| :--- | :---: | :--- | :--- | :--- |
+| **资金规模与体量** | 1<br>2<br>3<br>4 | `total_amount_paid`<br>`total_amount_received`<br>`avg_amount_paid`<br>`avg_amount_received` | • 总付出金额 ($\log1p$)<br>• 总接收金额 ($\log1p$)<br>• 笔均付出金额 ($\log1p$)<br>• 笔均接收金额 ($\log1p$) | 消除数值长尾偏态分布与大额量纲干扰，刻画账户整体资金吞吐规模。 |
+| **资金流动与留存** | 5<br><br>6 | `net_flow_ratio`<br><br>`unique_currency_count` | $\frac{\text{Received} - \text{Paid}}{\text{Received} + \text{Paid} + 1e-5}$<br><br>涉及交易货币种类去重总数 | 捕捉洗钱账户“快进快出（资金留存率极低）”与跨币种高复杂度洗钱行为。 |
+| **图拓扑与交互度** | 7<br>8 | `unique_out_accounts`<br>`unique_in_accounts` | • 出度去重对手数 (Out-Degree)<br>• 入度去重对手数 (In-Degree) | 识别洗钱网络中的“分散归集节点（多对一）”与“裂变分发节点（一对多）”。 |
+| **行为频次与时序** | 9<br>10<br>11<br>12 | `total_out_count`<br>`total_in_count`<br>`avg_T_out`<br>`avg_T_in` | • 总付款笔数<br>• 总收款笔数<br>• 平均转出时间间隔频次<br>• 平均转入时间间隔频次 | 捕捉高频自动化洗钱、拆单交易（Structuring）及定时归集等异常行为。 |
+
+1. total_amount_paid      : 总付出金额 (对数压缩)
+2. total_amount_received  : 总接收金额 (对数压缩)
+3. avg_amount_paid        : 笔均付出金额 (对数压缩)
+4. avg_amount_received    : 笔均接收金额 (对数压缩)
+5. net_flow_ratio         : 资金净流转率 (Received - Paid) / (Received + Paid + 1e-5)
+6. unique_currency_count  : 涉及货币种类总数 (衡量交易复杂度)
+7. unique_out_accounts    : 出度去重数
+8. unique_in_accounts     : 入度去重数
+9. total_out_count        : 总付款笔数
+10. total_in_count        : 总进款笔数
+11. avg_T_out             : 平均转出频次
+12. avg_T_in              : 平均转入频次
 (3)、交易边的时间戳归一化（MinMaxScaler）处理中，max依赖于未来的测试集，除了数据泄露外，将时间归一化，这种处理方式在实际模型中几乎没有直接的预测意义。上线后面对未来的新交易，[0,1]映射会直接溢出失效。
 
 (4)、边特征金额缺乏汇率折算，不同货币的交易金额实际差异大。
@@ -133,20 +155,9 @@ C.关联密度特征（平均单对单交易频次）：（该账户发起的总
 
 (2)、节点特征：
 
-将原始31列稀疏节点特征，改进为12维度高信息密度特征（同时去掉Bank列）。
+将原始31列稀疏节点特征，改进为12维度高信息密度特征（同时去掉Bank列），并用standardscale归一化。
 
-1. total_amount_paid      : 总付出金额 (对数压缩)
-2. total_amount_received  : 总接收金额 (对数压缩)
-3. avg_amount_paid        : 笔均付出金额 (对数压缩)
-4. avg_amount_received    : 笔均接收金额 (对数压缩)
-5. net_flow_ratio         : 资金净流转率 (Received - Paid) / (Received + Paid + 1e-5)
-6. unique_currency_count  : 涉及货币种类总数 (衡量交易复杂度)
-7. unique_out_accounts    : 出度去重数
-8. unique_in_accounts     : 入度去重数
-9. total_out_count        : 总付款笔数
-10. total_in_count        : 总进款笔数
-11. avg_T_out             : 平均转出频次
-12. avg_T_in              : 平均转入频次
+
 
 (3)、交易边特征：
 
