@@ -7,7 +7,7 @@
 # 一、基本信息
 1、初次获取渠道：Kaggle Notebook 
 
-2、Kaggle链接：https://www.kaggle.com/code/issacchanjj/anti-money-laundering-detection-with-gnn/notebook
+2、原作Kaggle链接：https://www.kaggle.com/code/issacchanjj/anti-money-laundering-detection-with-gnn/notebook
 
 3、原作GitHub仓库链接：https://github.com/issacchan26/AntiMoneyLaunderingDetectionWithGNN/tree/main
 
