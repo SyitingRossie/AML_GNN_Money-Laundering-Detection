@@ -1,7 +1,7 @@
 # Anti-Money Laundering Detection with GNN (Account-Level)
 基于图神经网络的反洗钱账户识别项目，由开源基线迭代优化而来。
 基于PyTorch Geometric与GATv2架构构建的反洗钱（AML）节点分类模型。
-本项目针对Kaggle开源基线进行全方位的重构，重点解决了传统GNN在金融风控场景中的时序数据泄露、特征工程稀疏、样本极度不平衡等核心缺陷。
+本项目针对Kaggle开源基线进行全方位的重构，重点解决了传统GNN在金融风控场景中的时序数据泄露、特征工程疏漏、样本极度不平衡等核心缺陷。
 
 
 # 一、基本信息
