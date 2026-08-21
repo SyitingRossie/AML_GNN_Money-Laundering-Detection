@@ -54,17 +54,15 @@
 (3)、类别编码缺陷：bank列使用LabelEncoder编码转化为连续整数,无意义地引入了顺序关系和数值大小关系。
 
 **优化方案**：
-(1)、
-### 2. 特征工程重构：12 维高稠密风控特征矩阵
 
-彻底废弃原基线 31 维稀疏且带数值偏差的特征，将节点特征重构为 **4 大风控业务维度、共 12 维稠密特征**，并在各时序窗口内独立进行 $\log1p$ 极值平滑与 `StandardScaler` 标准化处理：
+摒弃原31维稀疏特征，将节点特征重构为 **4 大风控业务维度、共 12 维稠密特征**，并在各时序窗口内独立进行 $\log1p$ 极值平滑与 `StandardScaler` 标准化处理：
 
-| 风控业务维度 | 序号 | 特征名称 (Feature) | 算子逻辑与公式 | 解决了什么业务/工程痛点 |
+| 风控业务维度 || 特征名称 (Feature) | 算子逻辑与公式 | 解决了什么业务/工程痛点 |
 | :--- | :---: | :--- | :--- | :--- |
-| **资金规模与体量** | 1<br>2<br>3<br>4 | `total_amount_paid`<br>`total_amount_received`<br>`avg_amount_paid`<br>`avg_amount_received` | • 总付出金额 ($\log1p$)<br>• 总接收金额 ($\log1p$)<br>• 笔均付出金额 ($\log1p$)<br>• 笔均接收金额 ($\log1p$) | 消除数值长尾偏态分布与大额量纲干扰，刻画账户整体资金吞吐规模。 |
-| **资金流动与留存** | 5<br><br>6 | `net_flow_ratio`<br><br>`unique_currency_count` | $\frac{\text{Received} - \text{Paid}}{\text{Received} + \text{Paid} + 1e-5}$<br><br>涉及交易货币种类去重总数 | 捕捉洗钱账户“快进快出（资金留存率极低）”与跨币种高复杂度洗钱行为。 |
-| **图拓扑与交互度** | 7<br>8 | `unique_out_accounts`<br>`unique_in_accounts` | • 出度去重对手数 (Out-Degree)<br>• 入度去重对手数 (In-Degree) | 识别洗钱网络中的“分散归集节点（多对一）”与“裂变分发节点（一对多）”。 |
-| **行为频次与时序** | 9<br>10<br>11<br>12 | `total_out_count`<br>`total_in_count`<br>`avg_T_out`<br>`avg_T_in` | • 总付款笔数<br>• 总收款笔数<br>• 平均转出时间间隔频次<br>• 平均转入时间间隔频次 | 捕捉高频自动化洗钱、拆单交易（Structuring）及定时归集等异常行为。 |
+| **资金规模与体量** | `total_amount_paid`<br>`total_amount_received`<br>`avg_amount_paid`<br>`avg_amount_received` | • 总付出金额 ($\log1p$)<br>• 总接收金额 ($\log1p$)<br>• 笔均付出金额 ($\log1p$)<br>• 笔均接收金额 ($\log1p$) | 消除数值长尾偏态分布与大额量纲干扰，刻画账户整体资金吞吐规模。 |
+| **资金流动与留存** |  `net_flow_ratio`<br><br>`unique_currency_count` | $\frac{\text{Received} - \text{Paid}}{\text{Received} + \text{Paid} + 1e-5}$<br><br>涉及交易货币种类去重总数 | 捕捉洗钱账户“快进快出（资金留存率极低）”与跨币种高复杂度洗钱行为。 |
+| **图拓扑与交互度** | `unique_out_accounts`<br>`unique_in_accounts` | • 出度去重对手数 (Out-Degree)<br>• 入度去重对手数 (In-Degree) | 识别洗钱网络中的“分散归集节点（多对一）”与“裂变分发节点（一对多）”。 |
+| **行为频次与时序** |  `total_out_count`<br>`total_in_count`<br>`avg_T_out`<br>`avg_T_in` | • 总付款笔数<br>• 总收款笔数<br>• 平均转出时间间隔频次<br>• 平均转入时间间隔频次 | 捕捉高频自动化洗钱、拆单交易（Structuring）及定时归集等异常行为。 |
 
 1. total_amount_paid      : 总付出金额 (对数压缩)
 2. total_amount_received  : 总接收金额 (对数压缩)
