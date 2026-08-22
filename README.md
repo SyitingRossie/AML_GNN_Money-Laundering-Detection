@@ -60,15 +60,14 @@
 
 (1)、资金规模与体量（捕捉“大体量+小笔均”的拆单洗钱模式）
 
-total_amount_paid：总支出金额   
-total_amount_received：总接收金额
+total_amount_paid、total_amount_received ：总转出/转入金额   
 
-avg_amount_paid： 笔均付出金额  
-avg_amount_received：笔均接收金额
+avg_amount_paid、avg_amount_received：笔均转出/转入金额  
 
 (2)、资金流动与留存（捕捉资金零留存(过路中转户)与高复杂度洗钱）
 
 net_flow_ratio：资金净流转率，公式=(Rec−Paid)/(Rec+Paid+1e−5)
+
 unique_currency_count：涉及交易货币种类去重总数
 
 (3)、图拓扑与交互度（识别“归集”与“分发”网络角色）
@@ -78,24 +77,15 @@ unique_out_accounts、unique_in_accounts：出/入度去重对手数
 (4)、行为频次与时序（捕捉高频拆单与自动化定时归集）
 
 total_out_count、total_in_count：总转出/准入笔数
+
 avg_T_out、avg_T_in：对手平均转出/转入频次
 
 
-1. total_amount_paid      : 总付出金额 (对数压缩)
-2. total_amount_received  : 总接收金额 (对数压缩)
-3. avg_amount_paid        : 笔均付出金额 (对数压缩)
-4. avg_amount_received    : 笔均接收金额 (对数压缩)
-5. net_flow_ratio         : 资金净流转率 (Received - Paid) / (Received + Paid + 1e-5)
-6. unique_currency_count  : 涉及货币种类总数 (衡量交易复杂度)
-7. unique_out_accounts    : 出度去重数
-8. unique_in_accounts     : 入度去重数
-9. total_out_count        : 总付款笔数
-10. total_in_count        : 总进款笔数
-11. avg_T_out             : 平均转出频次
-12. avg_T_in              : 平均转入频次
-### 2. 特征工程重构：12 维高稠密风控特征矩阵
 
-彻底废弃原基线 31 维稀疏且带数值偏差的特征，将节点特征重构为 **4 大风控业务维度、共 12 维稠密特征**，并在各时序窗口内独立进行 $\log1p$ 极值平滑与 `StandardScaler` 标准化处理：
+
+
+
+
 
 (3)、交易边的时间戳归一化（MinMaxScaler）处理中，max依赖于未来的测试集，除了数据泄露外，将时间归一化，这种处理方式在实际模型中几乎没有直接的预测意义。上线后面对未来的新交易，[0,1]映射会直接溢出失效。
 
