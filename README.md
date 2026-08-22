@@ -57,14 +57,6 @@
 
 摒弃原31维稀疏特征，将节点特征重构为 **4 大风控业务维度、共 12 维稠密特征**，并在各时序窗口内独立进行统一 $\log1p$ 极值平滑与 `StandardScaler` 标准化处理：
 
-| 风控业务维度 | 序号 | 特征名称 (Feature) | 算子逻辑与公式 | 核心风控业务语义 (AML Pattern) |
-| :--- | :---: | :--- | :--- | :--- |
-| **资金规模与体量**<br>*(Scale & Magnitude)* | 1<br>2<br>3<br>4 | `total_amount_paid`<br>`total_amount_received`<br>`avg_amount_paid`<br>`avg_amount_received` | • 总付出金额 ($\log1p$)<br>• 总接收金额 ($\log1p$)<br>• 笔均付出金额 ($\log1p$)<br>• 笔均接收金额 ($\log1p$) | **精准捕捉“大体量 + 小笔均”拆单模式**：通过总额与笔均组合，区分普通消费、对公结算与黑产化整为零的“蚂蚁搬家/规避监管线”行为。 |
-| **资金留存与通道化**<br>*(Pass-Through & Flow)* | 5<br><br>6 | `net_flow_ratio`<br><br>`unique_currency_count` | $\frac{\text{Received} - \text{Paid}}{\text{Received} + \text{Paid} + 1e-5}$<br><br>涉及交易货币种类去重总数 | **识别“零留存过路户”与离岸混淆**：以净流转率锁定资金“快进快出、不留残余”的中转管道，结合币种复杂度捕捉跨境层级混淆 (Layering)。 |
-| **图拓扑与网络角色**<br>*(Topology & Role)* | 7<br>8 | `unique_out_accounts`<br>`unique_in_accounts` | • 出度去重对手数 (Out-Degree)<br>• 入度去重对手数 (In-Degree) | **识别拓扑节点角色**：精准映射洗钱网络中的“多对一漏斗汇聚节点（归集户）”与“一对多扇出裂变节点（分发户）”。 |
-| **交互密度与行为粘性**<br>*(Interaction & Density)* | 9<br>10<br>11<br>12 | `total_out_count`<br>`total_in_count`<br>`avg_T_out`<br>`avg_T_in` | • 转出总笔数<br>• 转入总笔数<br>• $\frac{\text{total\_out\_count}}{\text{unique\_out\_accounts}}$<br>• $\frac{\text{total\_in\_count}}{\text{unique\_in\_accounts}}$ | **区分交易行为模式**：通过单对手平均交易频次 ($\text{avg\_T}$)，区分“广撒网式单次派单分发 ($\text{avg\_T}\approx 1$)”与“固定通道程序化打款 ($\text{avg\_T}\gg 1$)”。 |
-
-
 
 (1)、资金规模与体量（捕捉“大体量+小笔均”的拆单洗钱模式）
 
@@ -74,7 +66,7 @@ total_amount_received：总接收金额
 avg_amount_paid： 笔均付出金额  
 avg_amount_received：笔均接收金额
 
-(2)、资金流动与留存（捕捉“快进快出”与高复杂度洗钱）
+(2)、资金流动与留存（捕捉资金零留存(过路中转户)与高复杂度洗钱）
 
 net_flow_ratio：资金净流转率，公式=(Rec−Paid)/(Rec+Paid+1e−5)
 
@@ -82,8 +74,7 @@ unique_currency_count：涉及交易货币种类去重总数
 
 (3)、图拓扑与交互度（识别“归集”与“分发”网络角色）
 
-unique_out_accounts：出度去重对手数 (Out-Degree)  
-unique_in_accounts：入度去重对手数 (In-Degree)
+unique_out_accounts、unique_in_accounts：出/入度去重对手数
 
 (4)、行为频次与时序（捕捉高频拆单与自动化定时归集）
 
