@@ -22,7 +22,7 @@
 
 
 
-# 二、核心优化
+## 二、核心优化
 **1.严格时序防泄露设计**
 
 **基线痛点**：原demo是基于所有交易统计节点标签和节点特征后，再进行随机切分训练集和验证集，忽略了金融风控实际场景中的时间先后顺序。
@@ -55,9 +55,18 @@
 
 **优化方案**：
 
-摒弃原31维稀疏特征，将节点特征重构为 **4 大风控业务维度、共 12 维稠密特征**，并在各时序窗口内独立进行 $\log1p$ 极值平滑与 `StandardScaler` 标准化处理：
+摒弃原31维稀疏特征，将节点特征重构为 **4 大风控业务维度、共 12 维稠密特征**，并在各时序窗口内独立进行统一 $\log1p$ 极值平滑与 `StandardScaler` 标准化处理：
 
-(1)、资金规模与体量（平滑长尾分布，消除大额量纲干扰）
+| 风控业务维度 | 序号 | 特征名称 (Feature) | 算子逻辑与公式 | 核心风控业务语义 (AML Pattern) |
+| :--- | :---: | :--- | :--- | :--- |
+| **资金规模与体量**<br>*(Scale & Magnitude)* | 1<br>2<br>3<br>4 | `total_amount_paid`<br>`total_amount_received`<br>`avg_amount_paid`<br>`avg_amount_received` | • 总付出金额 ($\log1p$)<br>• 总接收金额 ($\log1p$)<br>• 笔均付出金额 ($\log1p$)<br>• 笔均接收金额 ($\log1p$) | **精准捕捉“大体量 + 小笔均”拆单模式**：通过总额与笔均组合，区分普通消费、对公结算与黑产化整为零的“蚂蚁搬家/规避监管线”行为。 |
+| **资金留存与通道化**<br>*(Pass-Through & Flow)* | 5<br><br>6 | `net_flow_ratio`<br><br>`unique_currency_count` | $\frac{\text{Received} - \text{Paid}}{\text{Received} + \text{Paid} + 1e-5}$<br><br>涉及交易货币种类去重总数 | **识别“零留存过路户”与离岸混淆**：以净流转率锁定资金“快进快出、不留残余”的中转管道，结合币种复杂度捕捉跨境层级混淆 (Layering)。 |
+| **图拓扑与网络角色**<br>*(Topology & Role)* | 7<br>8 | `unique_out_accounts`<br>`unique_in_accounts` | • 出度去重对手数 (Out-Degree)<br>• 入度去重对手数 (In-Degree) | **识别拓扑节点角色**：精准映射洗钱网络中的“多对一漏斗汇聚节点（归集户）”与“一对多扇出裂变节点（分发户）”。 |
+| **交互密度与行为粘性**<br>*(Interaction & Density)* | 9<br>10<br>11<br>12 | `total_out_count`<br>`total_in_count`<br>`avg_T_out`<br>`avg_T_in` | • 转出总笔数<br>• 转入总笔数<br>• $\frac{\text{total\_out\_count}}{\text{unique\_out\_accounts}}$<br>• $\frac{\text{total\_in\_count}}{\text{unique\_in\_accounts}}$ | **区分交易行为模式**：通过单对手平均交易频次 ($\text{avg\_T}$)，区分“广撒网式单次派单分发 ($\text{avg\_T}\approx 1$)”与“固定通道程序化打款 ($\text{avg\_T}\gg 1$)”。 |
+
+
+
+(1)、资金规模与体量（捕捉“大体量+小笔均”的拆单洗钱模式）
 
 total_amount_paid：总支出金额   
 total_amount_received：总接收金额
@@ -78,11 +87,10 @@ unique_in_accounts：入度去重对手数 (In-Degree)
 
 (4)、行为频次与时序（捕捉高频拆单与自动化定时归集）
 
-total_out_count：总付款笔数
-total_in_count：总收款笔数
+total_out_count、total_in_count：总转出/准入笔数
 
-avg_T_out：平均转出频次
-avg_T_in：平均转入频次
+avg_T_out、avg_T_in：对手平均转出/转入频次
+
 
 1. total_amount_paid      : 总付出金额 (对数压缩)
 2. total_amount_received  : 总接收金额 (对数压缩)
