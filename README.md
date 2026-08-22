@@ -2,7 +2,7 @@
 基于图神经网络的反洗钱账户识别项目，由开源基线迭代优化而来。本项目针对Kaggle开源基线进行全方位的重构，重点解决了传统GNN在金融风控场景中的时序数据泄露、特征工程疏漏、样本极度不平衡等核心缺陷。
 
 
-# 一、基本信息
+## 一、基本信息
 1、初次获取渠道：Kaggle Notebook 
 
 2、原作Kaggle链接：https://www.kaggle.com/code/issacchanjj/anti-money-laundering-detection-with-gnn/notebook
